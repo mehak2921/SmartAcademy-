@@ -28,7 +28,7 @@ export default function InlineQuiz({ quizData, mode = 'Practice', onBack }) {
        try {
          const { data: sessionData } = await supabase.auth.getSession()
          const token = sessionData.session?.access_token
-         const evalRes = await axios.post('${import.meta.env.VITE_API_URL}/api/quiz/evaluate', {
+         const evalRes = await axios.post(import.meta.env.VITE_API_URL + '/api/quiz/evaluate', {
             question: question.question,
             expected_answer: question.answer,
             user_answer: currentInput
@@ -72,7 +72,7 @@ export default function InlineQuiz({ quizData, mode = 'Practice', onBack }) {
        })
        const score = Math.round((correctCount / quizData.questions.length) * 100)
 
-       await axios.post('${import.meta.env.VITE_API_URL}/api/quiz/save', {
+       await axios.post(import.meta.env.VITE_API_URL + '/api/quiz/save', {
           title: quizData.title,
           score: score,
           content: { questions: quizData.questions, answers: userAnswers, mode }

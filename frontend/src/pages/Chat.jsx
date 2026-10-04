@@ -140,7 +140,7 @@ export default function Chat() {
      try {
        const { data: sData } = await supabase.auth.getSession()
        const token = sData.session?.access_token
-       const response = await axios.post('${import.meta.env.VITE_API_URL}/api/chat/widget', {
+       const response = await axios.post(import.meta.env.VITE_API_URL + '/api/chat/widget', {
           session_id: currentSessionId,
           widget_type: type,
           widget_data: widgetData,
@@ -183,7 +183,7 @@ export default function Chat() {
 
       const docs = docsOverride ?? activeDocuments
 
-      const response = await axios.post('${import.meta.env.VITE_API_URL}/api/chat/', {
+      const response = await axios.post(import.meta.env.VITE_API_URL + '/api/chat/', {
         messages: validMessages,
         current_topic: current_topic,
         active_documents: docs.map(d => ({ id: d.id, name: d.name })),
@@ -241,7 +241,7 @@ export default function Chat() {
       const formData = new FormData()
       formData.append('file', file)
       
-      const uploadRes = await axios.post('${import.meta.env.VITE_API_URL}/api/documents/upload', formData, {
+      const uploadRes = await axios.post(import.meta.env.VITE_API_URL + '/api/documents/upload', formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
@@ -298,7 +298,7 @@ export default function Chat() {
     try {
       const { data } = await supabase.auth.getSession()
       const token = data.session?.access_token
-      const response = await axios.post('${import.meta.env.VITE_API_URL}/api/flashcards/generate', {
+      const response = await axios.post(import.meta.env.VITE_API_URL + '/api/flashcards/generate', {
         topic: topic || null,
         active_documents: activeFileForModal ? [activeFileForModal.id] : activeDocuments.map(d => d.id),
         count
@@ -321,7 +321,7 @@ export default function Chat() {
      try {
        const { data } = await supabase.auth.getSession()
        const token = data.session?.access_token
-       const response = await axios.post('${import.meta.env.VITE_API_URL}/api/quiz/generate', {
+       const response = await axios.post(import.meta.env.VITE_API_URL + '/api/quiz/generate', {
          topic: null,
          active_documents: activeFileForModal ? [activeFileForModal.id] : activeDocuments.map(d => d.id),
          difficulty,

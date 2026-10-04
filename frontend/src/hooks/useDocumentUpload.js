@@ -19,7 +19,7 @@ export function useDocumentUpload() {
       const formData = new FormData()
       formData.append('file', selectedFile)
       
-      const uploadRes = await axios.post('${import.meta.env.VITE_API_URL}/api/documents/upload', formData, {
+      const uploadRes = await axios.post(import.meta.env.VITE_API_URL + '/api/documents/upload', formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',

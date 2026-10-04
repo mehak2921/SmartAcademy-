@@ -21,7 +21,7 @@ export default function Sidebar({ onClose }) {
       const { data } = await supabase.auth.getSession()
       const token = data.session?.access_token
       if (!token) return
-      const res = await axios.get('${import.meta.env.VITE_API_URL}/api/chat/sessions', {
+      const res = await axios.get(import.meta.env.VITE_API_URL + '/api/chat/sessions', {
         headers: { Authorization: `Bearer ${token}` }
       })
       setRecentChats(res.data || [])

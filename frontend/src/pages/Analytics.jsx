@@ -14,7 +14,7 @@ export default function Analytics() {
         const { data: sessionData } = await supabase.auth.getSession()
         const token = sessionData.session?.access_token
         
-        const response = await axios.get('${import.meta.env.VITE_API_URL}/api/analytics/', {
+        const response = await axios.get(import.meta.env.VITE_API_URL + '/api/analytics/', {
           headers: { Authorization: `Bearer ${token}` }
         })
         setData(response.data)
