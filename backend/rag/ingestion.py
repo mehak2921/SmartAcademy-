@@ -1,13 +1,12 @@
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings
+from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
 from core.security import service_supabase as supabase
-from core.config import settings
 import os
 
-# Use OpenAI cloud embeddings instead of local HuggingFace (avoids needing torch)
-embeddings = OpenAIEmbeddings(
-    model="text-embedding-3-small",
-    openai_api_key=os.getenv("OPENAI_API_KEY", ""),
+# Use Hugging Face's Free Cloud API instead of downloading the model locally
+embeddings = HuggingFaceInferenceAPIEmbeddings(
+    api_key=os.getenv("HF_TOKEN", ""),
+    model_name="BAAI/bge-base-en-v1.5"
 )
 
 text_splitter = RecursiveCharacterTextSplitter(
