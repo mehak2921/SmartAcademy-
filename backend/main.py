@@ -22,6 +22,7 @@ app.include_router(quiz.router, prefix="/api")
 app.include_router(flashcards.router, prefix="/api")
 
 @app.get("/")
+@app.head("/")
 def read_root():
     return {"message": "Welcome to Smart Academy API"}
 
