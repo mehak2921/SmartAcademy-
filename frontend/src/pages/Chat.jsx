@@ -70,7 +70,7 @@ export default function Chat() {
           const { data } = await supabase.auth.getSession()
           const token = data.session?.access_token
           const res = await axios.get(
-            `http://localhost:8000/api/chat/sessions/${sessionId}`,
+            `${import.meta.env.VITE_API_URL}/api/chat/sessions/${sessionId}`,
             { headers: { Authorization: `Bearer ${token}` } }
           )
           setCurrentSessionId(sessionId)
@@ -110,7 +110,7 @@ export default function Chat() {
         const token = data.session?.access_token
         const ids = processingDocs.map(d => d.id).join(',')
         const res = await axios.get(
-          `http://localhost:8000/api/documents/status?ids=${ids}`,
+          `${import.meta.env.VITE_API_URL}/api/documents/status?ids=${ids}`,
           { headers: { Authorization: `Bearer ${token}` } }
         )
         const completed = res.data.filter(d => d.processing_status === 'completed')
@@ -140,7 +140,7 @@ export default function Chat() {
      try {
        const { data: sData } = await supabase.auth.getSession()
        const token = sData.session?.access_token
-       const response = await axios.post('http://localhost:8000/api/chat/widget', {
+       const response = await axios.post('${import.meta.env.VITE_API_URL}/api/chat/widget', {
           session_id: currentSessionId,
           widget_type: type,
           widget_data: widgetData,
@@ -183,7 +183,7 @@ export default function Chat() {
 
       const docs = docsOverride ?? activeDocuments
 
-      const response = await axios.post('http://localhost:8000/api/chat/', {
+      const response = await axios.post('${import.meta.env.VITE_API_URL}/api/chat/', {
         messages: validMessages,
         current_topic: current_topic,
         active_documents: docs.map(d => ({ id: d.id, name: d.name })),
@@ -241,7 +241,7 @@ export default function Chat() {
       const formData = new FormData()
       formData.append('file', file)
       
-      const uploadRes = await axios.post('http://localhost:8000/api/documents/upload', formData, {
+      const uploadRes = await axios.post('${import.meta.env.VITE_API_URL}/api/documents/upload', formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
@@ -298,7 +298,7 @@ export default function Chat() {
     try {
       const { data } = await supabase.auth.getSession()
       const token = data.session?.access_token
-      const response = await axios.post('http://localhost:8000/api/flashcards/generate', {
+      const response = await axios.post('${import.meta.env.VITE_API_URL}/api/flashcards/generate', {
         topic: topic || null,
         active_documents: activeFileForModal ? [activeFileForModal.id] : activeDocuments.map(d => d.id),
         count
@@ -321,7 +321,7 @@ export default function Chat() {
      try {
        const { data } = await supabase.auth.getSession()
        const token = data.session?.access_token
-       const response = await axios.post('http://localhost:8000/api/quiz/generate', {
+       const response = await axios.post('${import.meta.env.VITE_API_URL}/api/quiz/generate', {
          topic: null,
          active_documents: activeFileForModal ? [activeFileForModal.id] : activeDocuments.map(d => d.id),
          difficulty,
