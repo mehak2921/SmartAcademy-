@@ -7,20 +7,23 @@ from pptx import Presentation
 class DocumentParser:
     @staticmethod
     def parse_pdf(file_path: str) -> str:
-        import pytesseract
-        pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-        from PIL import Image
-        import io
         text = ""
         try:
             doc = pymupdf.open(file_path)
             for page in doc:
                 page_text = page.get_text().strip()
                 if not page_text or len(page_text) < 150:
-                    # Fallback to OCR if the page has very little embedded text (e.g. just a CamScanner watermark)
-                    pix = page.get_pixmap(dpi=300)
-                    img = Image.open(io.BytesIO(pix.tobytes()))
-                    page_text = pytesseract.image_to_string(img).strip()
+                    try:
+                        import pytesseract
+                        from PIL import Image
+                        import io
+                        if os.name == 'nt':
+                            pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+                        pix = page.get_pixmap(dpi=300)
+                        img = Image.open(io.BytesIO(pix.tobytes()))
+                        page_text = pytesseract.image_to_string(img).strip()
+                    except Exception as ocr_e:
+                        print(f"OCR failed or not installed: {ocr_e}")
                 text += page_text + "\n"
         except Exception as e:
             print(f"Error parsing PDF: {e}")
@@ -52,15 +55,17 @@ class DocumentParser:
 
     @staticmethod
     def parse_image(file_path: str) -> str:
-        import pytesseract
-        pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-        from PIL import Image
         text = ""
         try:
+            import pytesseract
+            from PIL import Image
+            if os.name == 'nt':
+                pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
             img = Image.open(file_path)
             text = pytesseract.image_to_string(img).strip()
         except Exception as e:
             print(f"Error parsing Image: {e}")
+            text = "Image OCR not available on this server."
         return text
 
     @staticmethod
