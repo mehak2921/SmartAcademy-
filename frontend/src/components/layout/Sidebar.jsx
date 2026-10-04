@@ -12,7 +12,7 @@ export default function Sidebar({ onClose }) {
   const location = useLocation()
   const [recentChats, setRecentChats] = useState([])
   const [loadingSessions, setLoadingSessions] = useState(true)
-  const [recentsOpen, setRecentsOpen] = useState(true)
+  const [recentsOpen, setRecentsOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -83,8 +83,8 @@ export default function Sidebar({ onClose }) {
         </button>
 
         <NavLink onClick={onClose} to="/" end className={({ isActive }) => navItemClass(isActive)}>
-          <Home size={18} />
-          <span>Home</span>
+          <LayoutDashboard size={18} />
+          <span>Workspace</span>
         </NavLink>
 
         <NavLink onClick={onClose} to="/dashboard/analytics" className={({ isActive }) => navItemClass(isActive)}>
