@@ -1,0 +1,52 @@
+services:
+  # 1. The FastAPI Backend
+  - type: web
+    name: smart-academy-api
+    env: python
+    rootDir: backend
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: smart-academy-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: smart-academy-redis
+          property: connectionString
+      - key: PYTHON_VERSION
+        value: 3.10.0
+      # You will need to add these manually in the Render dashboard:
+      # - SUPABASE_URL
+      # - SUPABASE_SERVICE_KEY
+      # - OPENAI_API_KEY (or GROQ_API_KEY)
+
+  # 2. The Celery Worker for background tasks
+  - type: worker
+    name: smart-academy-worker
+    env: python
+    rootDir: backend
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "celery -A tasks.celery_app worker --loglevel=info"
+    envVars:
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: smart-academy-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: smart-academy-redis
+          property: connectionString
+      - key: PYTHON_VERSION
+        value: 3.10.0
+      # (Same manual environment variables as the web service)
+
+  # 3. Redis Database for Celery
+  - type: redis
+    name: smart-academy-redis
+    ipAllowList: [] # internal access only
