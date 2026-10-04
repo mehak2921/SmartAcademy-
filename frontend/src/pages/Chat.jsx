@@ -283,7 +283,7 @@ export default function Chat() {
        const userMsg = { role: 'user', content: prompt }
        setMessages(prev => [...prev, userMsg])
        const title = action.charAt(0).toUpperCase() + action.slice(1)
-       sendMessageToAI([...messages, userMsg], `${title} for ${document.name}`)
+         sendMessageToAI([...messages, userMsg], `${title} for ${document.name}`, [document])
     } else if (action === 'quiz') {
        setActiveFileForModal(document)
        setIsQuizModalOpen(true)
