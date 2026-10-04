@@ -19,7 +19,7 @@ export function useDocumentUpload() {
       const formData = new FormData()
       formData.append('file', selectedFile)
       
-      const uploadRes = await axios.post('http://localhost:8000/api/documents/upload', formData, {
+      const uploadRes = await axios.post('${import.meta.env.VITE_API_URL}/api/documents/upload', formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
@@ -43,7 +43,7 @@ export function useDocumentUpload() {
         const { data } = await supabase.auth.getSession()
         const token = data.session?.access_token
         const res = await axios.get(
-          `http://localhost:8000/api/documents/status?ids=${activeDocument.id}`,
+          `${import.meta.env.VITE_API_URL}/api/documents/status?ids=${activeDocument.id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         )
         if (res.data[0]?.processing_status === 'completed') {

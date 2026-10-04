@@ -21,7 +21,7 @@ export default function Sidebar({ onClose }) {
       const { data } = await supabase.auth.getSession()
       const token = data.session?.access_token
       if (!token) return
-      const res = await axios.get('http://localhost:8000/api/chat/sessions', {
+      const res = await axios.get('${import.meta.env.VITE_API_URL}/api/chat/sessions', {
         headers: { Authorization: `Bearer ${token}` }
       })
       setRecentChats(res.data || [])
@@ -50,7 +50,7 @@ export default function Sidebar({ onClose }) {
     try {
       const { data } = await supabase.auth.getSession()
       const token = data.session?.access_token
-      await axios.delete(`http://localhost:8000/api/chat/sessions/${sessionId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/chat/sessions/${sessionId}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       setRecentChats(prev => prev.filter(c => c.id !== sessionId))
