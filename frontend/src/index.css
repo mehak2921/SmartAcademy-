@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+}
+
+:root {
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4B5563;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6B7280;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #4B5563 transparent;
+}
+
+/* Markdown Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+th, td {
+  border: 1px solid #e5e7eb;
+  padding: 0.75rem;
+  text-align: left;
+}
+th {
+  background-color: #f9fafb;
+  font-weight: 600;
+}
+.dark th, .dark td {
+  border-color: #374151;
+}
+.dark th {
+  background-color: #1f2937;
+}
+
+
+/* Responsive tables and pre for prose */
+.prose {
+  width: 100%;
+  max-width: 100% !important;
+}
+.prose table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.prose pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.prose p, .prose ul, .prose ol {
+  word-break: break-word;
+}
+
