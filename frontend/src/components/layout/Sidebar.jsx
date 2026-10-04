@@ -70,7 +70,7 @@ export default function Sidebar({ onClose }) {
       {/* Header */}
       <div className="px-5 pt-5 pb-2 flex items-center justify-between">
         <span className="text-lg font-bold text-blue-400 tracking-tight">Smart Academy</span>
-        <button className="p-1.5 text-gray-500 hover:text-white border border-gray-700 rounded-md transition-colors" onClick={onClose} title="Collapse sidebar">
+        <button className="md:hidden p-1.5 text-gray-500 hover:text-white border border-gray-700 rounded-md transition-colors" onClick={onClose} title="Collapse sidebar">
           <PanelLeftClose size={16} />
         </button>
       </div>
