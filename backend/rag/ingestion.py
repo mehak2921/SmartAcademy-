@@ -1,15 +1,13 @@
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceBgeEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from core.security import service_supabase as supabase
+from core.config import settings
+import os
 
-# Initialize the embedding model (BAAI bge-base-en-v1.5)
-model_name = "BAAI/bge-base-en-v1.5"
-model_kwargs = {'device': 'cpu'} # Change to 'cuda' if GPU is available
-encode_kwargs = {'normalize_embeddings': True}
-embeddings = HuggingFaceBgeEmbeddings(
-    model_name=model_name,
-    model_kwargs=model_kwargs,
-    encode_kwargs=encode_kwargs
+# Use OpenAI cloud embeddings instead of local HuggingFace (avoids needing torch)
+embeddings = OpenAIEmbeddings(
+    model="text-embedding-3-small",
+    openai_api_key=os.getenv("OPENAI_API_KEY", ""),
 )
 
 text_splitter = RecursiveCharacterTextSplitter(

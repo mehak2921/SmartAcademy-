@@ -1,7 +1,4 @@
 from langchain_community.vectorstores import SupabaseVectorStore
-from langchain_classic.retrievers import ContextualCompressionRetriever
-from langchain_classic.retrievers.document_compressors import CrossEncoderReranker
-from langchain_community.cross_encoders import HuggingFaceCrossEncoder
 from core.security import service_supabase as supabase
 from rag.ingestion import embeddings
 from typing import Any
@@ -16,14 +13,10 @@ class CustomSupabaseVectorStore(SupabaseVectorStore):
         ret["match_threshold"] = 0.0
         return ret
 
-# Setup BAAI Reranker
-reranker_model = HuggingFaceCrossEncoder(model_name="BAAI/bge-reranker-v2-m3")
-compressor = CrossEncoderReranker(model=reranker_model, top_n=5)
-
 def get_retriever(document_ids: list[str] = None):
     """
-    Returns a retriever that performs vector search on Supabase 
-    and then reranks the results using BAAI bge-reranker.
+    Returns a retriever that performs vector search on Supabase.
+    Reranking has been removed for Render free-tier compatibility.
     """
     
     # Base Vector Store Retriever
@@ -41,10 +34,4 @@ def get_retriever(document_ids: list[str] = None):
         
     base_retriever = vector_store.as_retriever(search_kwargs=search_kwargs)
     
-    # Advanced Retrieval: Contextual Compression (Reranking)
-    compression_retriever = ContextualCompressionRetriever(
-        base_compressor=compressor,
-        base_retriever=base_retriever
-    )
-    
-    return compression_retriever
+    return base_retriever
