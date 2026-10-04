@@ -1,6 +1,6 @@
 import os
 import tempfile
-import pymupdf
+import fitz  # PyMuPDF
 from docx import Document
 from pptx import Presentation
 
@@ -9,7 +9,7 @@ class DocumentParser:
     def parse_pdf(file_path: str) -> str:
         text = ""
         try:
-            doc = pymupdf.open(file_path)
+            doc = fitz.open(file_path)
             for page in doc:
                 page_text = page.get_text().strip()
                 if not page_text or len(page_text) < 150:
