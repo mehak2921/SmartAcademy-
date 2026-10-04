@@ -82,7 +82,7 @@ export default function Sidebar({ onClose }) {
           <span>New chat</span>
         </button>
 
-        <NavLink onClick={onClose} to="/" end className={({ isActive }) => navItemClass(isActive)}>
+        <NavLink onClick={onClose} to="/dashboard" end className={({ isActive }) => navItemClass(isActive)}>
           <LayoutDashboard size={18} />
           <span>Workspace</span>
         </NavLink>
