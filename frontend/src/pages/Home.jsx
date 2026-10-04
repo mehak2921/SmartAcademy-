@@ -59,7 +59,7 @@ export default function Home() {
   const navigate = useNavigate();
 
   return (
-    <div className="max-w-6xl mx-auto py-8 px-4">
+    <div className="max-w-6xl mx-auto pt-16 pb-8 px-4">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -77,7 +77,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
             onClick={() => navigate(card.path)}
-            className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 cursor-pointer hover:shadow-md hover:border-slate-200 dark:hover:border-slate-600 hover:-translate-y-1 transition-all duration-200"
+            className={`bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 cursor-pointer hover:shadow-md hover:border-slate-200 dark:hover:border-slate-600 hover:-translate-y-1 transition-all duration-200 ${card.title === 'AI Chat' ? 'md:col-span-2 lg:col-span-3' : ''}`}
           >
             <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${card.color} shadow-sm`}>
               <card.icon size={24} className="text-white" />
