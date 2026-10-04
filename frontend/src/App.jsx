@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard'
 import Landing from './pages/Landing'
 import Chat from './pages/Chat'
 import Analytics from './pages/Analytics'
+import Home from './pages/Home'
 
 import ForgotPassword from './pages/ForgotPassword'
 import UpdatePassword from './pages/UpdatePassword'
@@ -29,7 +30,7 @@ function AppRoutes() {
           <Dashboard />
         </PrivateRoute>
       }>
-        <Route index element={<Navigate to="/dashboard/chat" replace />} />
+        <Route index element={<Home />} />
         <Route path="chat" element={<Chat />} />
         <Route path="analytics" element={<Analytics />} />
       </Route>
