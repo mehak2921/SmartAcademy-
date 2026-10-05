@@ -43,26 +43,34 @@ async def generate_flashcards(request: GenerateFlashcardsRequest, user=Depends(g
         
         result = llm_structured.invoke(prompt)
         
-        if not result.is_valid_study_material:
+        is_valid = result.get("is_valid_study_material", True) if isinstance(result, dict) else getattr(result, "is_valid_study_material", True)
+        if not is_valid:
             raise HTTPException(400, "I cannot generate flashcards for this type of document (e.g. resumes, CVs). Please upload educational or study material.")
+        
+        result_title = result.get("title", "Flashcards") if isinstance(result, dict) else result.title
+        result_flashcards = result.get("flashcards", []) if isinstance(result, dict) else result.flashcards
         
         # Save to Chat Sessions for history
         try:
             sess = service_supabase.table("chat_sessions").insert({
                 "user_id": user.id,
-                "title": f"Flashcards: {result.title}",
+                "title": f"Flashcards: {result_title}",
             }).execute()
             session_id = sess.data[0]["id"]
             
             # Format markdown
-            markdown_content = f"### {result.title}\n\n"
-            for i, fc in enumerate(result.flashcards):
-                markdown_content += f"**Front:** {fc.front}\n"
-                markdown_content += f"**Back:** {fc.back}\n\n"
-                if i < len(result.flashcards) - 1:
-                    markdown_content += "---\n\n"
-            
-            user_msg = f"Create {count} flashcards for the uploaded document." if request.active_documents else f"Create {count} flashcards about {request.topic}."
+            markdown_content = f"### {result_title}
+
+"
+            for f in result_flashcards:
+                f_front = f.get("front", "") if isinstance(f, dict) else f.front
+                f_back = f.get("back", "") if isinstance(f, dict) else f.back
+                markdown_content += f"**Front:** {f_front}
+**Back:** {f_back}
+
+"
+                
+            user_msg = "Generate flashcards for the uploaded document." if request.active_documents else f"Generate flashcards about {request.topic}."
             
             service_supabase.table("chat_messages").insert([
                 {"session_id": session_id, "role": "user", "content": user_msg},
@@ -71,8 +79,9 @@ async def generate_flashcards(request: GenerateFlashcardsRequest, user=Depends(g
         except Exception as e:
             print("Failed to save flashcards history to chat session:", e)
             
-        return result.dict()
+        return result if isinstance(result, dict) else result.dict()
     except Exception as e:
         import traceback; traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
+
 

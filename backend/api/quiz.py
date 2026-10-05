@@ -67,24 +67,31 @@ async def generate_quiz(request: GenerateQuizRequest, user=Depends(get_current_u
         
         result = llm_structured.invoke(prompt)
         
-        if not result.is_valid_study_material:
+        is_valid = result.get("is_valid_study_material", True) if isinstance(result, dict) else getattr(result, "is_valid_study_material", True)
+        if not is_valid:
             raise HTTPException(400, "I cannot generate a quiz for this type of document (e.g. resumes, CVs). Please upload educational or study material.")
+        
+        result_title = result.get("title", "Quiz") if isinstance(result, dict) else result.title
+        result_questions = result.get("questions", []) if isinstance(result, dict) else result.questions
         
         # Save to Chat Sessions for history
         try:
             sess = service_supabase.table("chat_sessions").insert({
                 "user_id": user.id,
-                "title": f"Quiz: {result.title}",
+                "title": f"Quiz: {result_title}",
             }).execute()
             session_id = sess.data[0]["id"]
             
             # Format markdown
-            markdown_content = f"### {result.title}\n\n"
-            for i, q in enumerate(result.questions):
-                markdown_content += f"**Q{i+1}: {q.question}**\n"
-                for opt in q.options:
+            markdown_content = f"### {result_title}\n\n"
+            for i, q in enumerate(result_questions):
+                q_question = q.get("question", "") if isinstance(q, dict) else q.question
+                q_options = q.get("options", []) if isinstance(q, dict) else getattr(q, "options", [])
+                q_answer = q.get("answer", "") if isinstance(q, dict) else q.answer
+                markdown_content += f"**Q{i+1}: {q_question}**\n"
+                for opt in q_options:
                     markdown_content += f"- [ ] {opt}\n"
-                markdown_content += f"*(Answer: {q.answer})*\n\n"
+                markdown_content += f"*(Answer: {q_answer})*\n\n"
                 
             user_msg = f"Create a {request.difficulty} {request.type} quiz for the uploaded document." if request.active_documents else f"Create a {request.difficulty} {request.type} quiz about {request.topic}."
             
@@ -95,7 +102,7 @@ async def generate_quiz(request: GenerateQuizRequest, user=Depends(get_current_u
         except Exception as e:
             print("Failed to save quiz history to chat session:", e)
             
-        return result.dict()
+        return result if isinstance(result, dict) else result.dict()
     except Exception as e:
         import traceback; traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
@@ -147,4 +154,5 @@ async def save_quiz(request: SaveQuizRequest, user=Depends(get_current_user)):
     except Exception as e:
         import traceback; traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
+
 
