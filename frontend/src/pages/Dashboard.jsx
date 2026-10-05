@@ -32,7 +32,7 @@ export default function DashboardLayout() {
 
       {/* Main Content */}
       <div className="flex-1 min-w-0 flex flex-col p-4 lg:p-8 pt-20 md:pt-4 overflow-x-hidden">
-        <Outlet key={location.pathname + location.search} />
+        <Outlet key={location.pathname} />
       </div>
     </div>
   )
