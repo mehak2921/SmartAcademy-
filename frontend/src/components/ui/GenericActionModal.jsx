@@ -3,11 +3,12 @@ import { X, Sparkles } from 'lucide-react'
 
 export default function GenericActionModal({ isOpen, onClose, onGenerate, sourceName, actionType }) {
   const [instructions, setInstructions] = useState('')
+  const [topic, setTopic] = useState('')
 
   if (!isOpen) return null
 
   const handleGenerate = () => {
-    onGenerate(instructions)
+    onGenerate({ topic, instructions })
     onClose()
   }
 
@@ -54,8 +55,8 @@ export default function GenericActionModal({ isOpen, onClose, onGenerate, source
                 <input 
                   type="text"
                   placeholder="Enter a topic (e.g., Photosynthesis, The Cold War)"
-                  value={instructions}
-                  onChange={(e) => setInstructions(e.target.value)}
+                  value={topic}
+                  onChange={(e) => setTopic(e.target.value)}
                   className="flex-1 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
                 />
                 <button 
@@ -103,6 +104,7 @@ export default function GenericActionModal({ isOpen, onClose, onGenerate, source
     </div>
   )
 }
+
 
 
 
