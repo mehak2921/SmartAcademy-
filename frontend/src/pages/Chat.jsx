@@ -374,6 +374,36 @@ export default function Chat() {
     }
   }, [searchParams, messages.length, isLoading])
 
+    // Handle action from Home page
+    useEffect(() => {
+      const action = searchParams.get('action')
+      if (action && !isLoading && messages.length === 0) {
+        const newParams = new URLSearchParams(searchParams)
+        newParams.delete('action')
+        navigate({ search: newParams.toString() }, { replace: true })
+
+        if (action === 'quiz') {
+          setIsQuizModalOpen(true)
+        } else if (action === 'flashcards') {
+          setIsFlashcardModalOpen(true)
+        } else {
+          const promptMap = {
+            'summary': "Generate a detailed summary.",
+            'concepts': "Explain the key concepts.",
+            'resources': "Suggest useful learning resources.",
+            'plan': "Create a structured study plan."
+          }
+          if (promptMap[action]) {
+            const prompt = promptMap[action]
+            const userMsg = { role: 'user', content: prompt }
+            setMessages([userMsg])
+            const title = action.charAt(0).toUpperCase() + action.slice(1)
+            sendMessageToAI([userMsg], title)
+          }
+        }
+      }
+    }, [searchParams, messages.length, isLoading])
+
   return (
     <div className="flex flex-col h-[calc(100vh-2rem)] lg:h-[calc(100vh-4rem)] relative max-w-7xl mx-auto w-full">
       
@@ -606,6 +636,7 @@ export default function Chat() {
     </div>
   )
 }
+
 
 
 
