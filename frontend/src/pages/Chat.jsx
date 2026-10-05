@@ -386,7 +386,7 @@ export default function Chat() {
     }
     const basePrompt = promptMap[type] || "Generate response."
     let finalPrompt = basePrompt
-    if (topic) finalPrompt += ` Topic: ${topic}`
+    if (topic) finalPrompt += ` about: ${topic}`
     if (instructions) finalPrompt += ` Instructions: ${instructions}`
     
     const userMsg = { role: 'user', content: finalPrompt.trim() }
@@ -657,6 +657,7 @@ export default function Chat() {
     </div>
   )
 }
+
 
 
 
