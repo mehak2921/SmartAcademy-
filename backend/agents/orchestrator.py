@@ -201,8 +201,11 @@ def summary_agent(state: AgentState) -> dict:
         f"{get_chat_history_context(state)}\n"
         f"{context}"
     )
-    result = llm_structured.invoke(prompt)
-    return {"messages": [AIMessage(content=f"### {result.title}\n\n{result.summary}")]}
+    try:
+        result = llm_structured.invoke(prompt)
+        return {"messages": [AIMessage(content=f"### {result.title}\n\n{result.summary}")]}
+    except Exception as e:
+        return {"messages": [AIMessage(content="Sorry, I had trouble generating this summary. Please try again with a clearer topic.")]}
 
 def quiz_agent(state: AgentState) -> dict:
     if not state.get("active_documents"):
@@ -254,13 +257,17 @@ def study_plan_agent(state: AgentState) -> dict:
         f"{get_chat_history_context(state)}\n"
         f"{context}"
     )
-    result = llm_structured.invoke(prompt)
-
-    markdown_content = f"### {result.title}\n\n"
-    markdown_content += "| Day | Topic | Duration |\n|---|---|---|\n"
-    for task in result.tasks:
-        markdown_content += f"| {task.day} | {task.topic} | {task.duration} |\n"
-    return {"messages": [AIMessage(content=markdown_content)]}
+    try:
+        result = llm_structured.invoke(prompt)
+        if getattr(result, "is_valid_study_material", True) is False:
+            return {"messages": [AIMessage(content="I cannot generate a study plan for this document type (e.g. resumes). Please upload educational material.")]}
+        markdown_content = f"### {result.title}\n\n"
+        markdown_content += "| Day | Topic | Duration |\n|---|---|---|\n"
+        for task in result.tasks:
+            markdown_content += f"| {task.day} | {task.topic} | {task.duration} |\n"
+        return {"messages": [AIMessage(content=markdown_content)]}
+    except Exception as e:
+        return {"messages": [AIMessage(content="Sorry, I had trouble generating this study plan. Please try again with a clearer topic.")]}
 
 def flashcards_agent(state: AgentState) -> dict:
     if not state.get("active_documents"):
