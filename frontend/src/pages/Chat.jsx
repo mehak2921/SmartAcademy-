@@ -11,6 +11,7 @@ import DocumentCard from '../components/ui/DocumentCard'
 import ChatInputBar from '../components/ui/ChatInputBar'
 import GenerateQuizModal from '../components/ui/GenerateQuizModal'
 import GenerateFlashcardsModal from '../components/ui/GenerateFlashcardsModal'
+import GenericActionModal from '../components/ui/GenericActionModal'
 import InlineQuiz from '../components/ui/InlineQuiz'
 import InlineFlashcards from '../components/ui/InlineFlashcards'
 
@@ -37,6 +38,7 @@ export default function Chat() {
   // Modal State
   const [isQuizModalOpen, setIsQuizModalOpen] = useState(false)
   const [isFlashcardModalOpen, setIsFlashcardModalOpen] = useState(false)
+    const [genericModalData, setGenericModalData] = useState({ isOpen: false, type: '' })
   const [activeFileForModal, setActiveFileForModal] = useState(null)
 
   const messagesEndRef = useRef(null)
@@ -374,6 +376,28 @@ export default function Chat() {
     }
   }, [searchParams, messages.length, isLoading])
 
+  const handleGenerateGeneric = (instructions) => {
+    const { type } = genericModalData
+    const promptMap = {
+      'summary': "Generate a detailed summary.",
+      'concepts': "Explain the key concepts.",
+      'resources': "Suggest useful learning resources.",
+      'plan': "Create a structured study plan."
+    }
+    const basePrompt = promptMap[type] || "Generate response."
+    const finalPrompt = instructions ? ${basePrompt} Instructions:  : basePrompt
+    
+    const userMsg = { role: 'user', content: finalPrompt }
+    setMessages(prev => [...prev, userMsg])
+    const title = type.charAt(0).toUpperCase() + type.slice(1)
+    
+    if (activeFileForModal) {
+      sendMessageToAI([...messages, userMsg], ${title} for , [activeFileForModal])
+    } else {
+      sendMessageToAI([...messages, userMsg], title)
+    }
+  }
+
     // Handle action from Home page
     useEffect(() => {
       const action = searchParams.get('action')
@@ -626,16 +650,29 @@ export default function Chat() {
          onGenerate={handleGenerateQuiz} 
          sourceName={activeFileForModal ? activeFileForModal.name : null} 
       />
-      <GenerateFlashcardsModal 
+            <GenerateFlashcardsModal 
          isOpen={isFlashcardModalOpen} 
          onClose={() => setIsFlashcardModalOpen(false)} 
          onGenerate={handleGenerateFlashcards} 
          sourceName={activeFileForModal ? activeFileForModal.name : null} 
       />
+      <GenericActionModal
+         isOpen={genericModalData.isOpen}
+         onClose={() => setGenericModalData({ isOpen: false, type: '' })}
+         onGenerate={handleGenerateGeneric}
+         sourceName={activeFileForModal ? activeFileForModal.name : null}
+         actionType={genericModalData.type}
+      />
 
     </div>
   )
 }
+
+
+
+
+
+
 
 
 
