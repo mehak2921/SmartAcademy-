@@ -177,7 +177,7 @@ def chat_agent(state: AgentState) -> dict:
         f"You are Smart Academy AI, a helpful educational assistant. Today's date is {current_date}."
         f"{context}"
     ))
-    response = llm.invoke([system_prompt] + state["messages"])
+    response = llm.invoke([system_prompt] + state["messages"][-10:])
     return {"messages": [response]}
 
 def summary_agent(state: AgentState) -> dict:
@@ -396,6 +396,7 @@ workflow.add_edge("concepts_agent", END)
 workflow.add_edge("resources_agent", END)
 
 orchestrator = workflow.compile()
+
 
 
 
