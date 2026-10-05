@@ -412,20 +412,8 @@ export default function Chat() {
           setIsQuizModalOpen(true)
         } else if (action === 'flashcards') {
           setIsFlashcardModalOpen(true)
-        } else {
-          const promptMap = {
-            'summary': "Generate a detailed summary.",
-            'concepts': "Explain the key concepts.",
-            'resources': "Suggest useful learning resources.",
-            'plan': "Create a structured study plan."
-          }
-          if (promptMap[action]) {
-            const prompt = promptMap[action]
-            const userMsg = { role: 'user', content: prompt }
-            setMessages([userMsg])
-            const title = action.charAt(0).toUpperCase() + action.slice(1)
-            sendMessageToAI([userMsg], title)
-          }
+        } else if (['summary', 'concepts', 'resources', 'plan'].includes(action)) {
+          setGenericModalData({ isOpen: true, type: action })
         }
       }
     }, [searchParams, messages.length, isLoading])
