@@ -13,6 +13,12 @@ export default function ChatInputBar({
 }) {
   const fileInputRef = useRef(null)
 
+  useEffect(() => {
+    const handleUploadEvent = () => fileInputRef.current?.click();
+    window.addEventListener('trigger-file-upload', handleUploadEvent);
+    return () => window.removeEventListener('trigger-file-upload', handleUploadEvent);
+  }, []);
+
   return (
     <div className="w-full max-w-4xl mx-auto px-4 pb-2">
 
@@ -111,3 +117,4 @@ export default function ChatInputBar({
     </div>
   )
 }
+

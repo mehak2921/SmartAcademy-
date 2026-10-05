@@ -42,13 +42,22 @@ export default function GenerateQuizModal({ isOpen, onClose, onGenerate, sourceN
                 {sourceName}
               </div>
             ) : (
-              <input 
-                type="text"
-                placeholder="Enter a topic (e.g., World War II, Python Basics)"
-                value={topic}
-                onChange={(e) => setTopic(e.target.value)}
-                className="w-full bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 dark:text-white"
-              />
+              <div className="flex space-x-2">
+                <input 
+                  type="text"
+                  placeholder="Enter a topic (e.g., World War II, Python Basics)"
+                  value={topic}
+                  onChange={(e) => setTopic(e.target.value)}
+                  className="flex-1 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 dark:text-white"
+                />
+                <button 
+                  type="button"
+                  onClick={() => { onClose(); window.dispatchEvent(new CustomEvent('trigger-file-upload')); }}
+                  className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-medium text-sm border border-gray-200 dark:border-gray-700 whitespace-nowrap"
+                >
+                  Upload File
+                </button>
+              </div>
             )}
           </div>
 
@@ -125,4 +134,5 @@ export default function GenerateQuizModal({ isOpen, onClose, onGenerate, sourceN
     </div>
   )
 }
+
 

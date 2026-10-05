@@ -63,13 +63,24 @@ export default function GenerateFlashcardsModal({ isOpen, onClose, onGenerate, s
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 {sourceName ? "Specific Topic / Focus (Optional)" : "Topic (Required)"}
               </label>
-              <input
-                type="text"
-                value={topic}
-                onChange={(e) => setTopic(e.target.value)}
-                placeholder="e.g., Focus on dates and historical figures"
-                className="w-full bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500 text-gray-900 dark:text-gray-100"
-              />
+              <div className="flex space-x-2">
+                <input
+                  type="text"
+                  value={topic}
+                  onChange={(e) => setTopic(e.target.value)}
+                  placeholder="e.g., Focus on dates and historical figures"
+                  className="flex-1 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500 text-gray-900 dark:text-gray-100"
+                />
+                {!sourceName && (
+                  <button 
+                    type="button"
+                    onClick={() => { onClose(); window.dispatchEvent(new CustomEvent('trigger-file-upload')); }}
+                    className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-medium text-sm border border-gray-200 dark:border-gray-700 whitespace-nowrap"
+                  >
+                    Upload File
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="pt-4 flex space-x-3">
@@ -93,4 +104,5 @@ export default function GenerateFlashcardsModal({ isOpen, onClose, onGenerate, s
     </AnimatePresence>
   )
 }
+
 

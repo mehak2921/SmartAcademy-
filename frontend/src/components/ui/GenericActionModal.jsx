@@ -50,13 +50,22 @@ export default function GenericActionModal({ isOpen, onClose, onGenerate, source
                 {sourceName}
               </div>
             ) : (
-              <input 
-                type="text"
-                placeholder="Enter a topic (e.g., Photosynthesis, The Cold War)"
-                value={instructions}
-                onChange={(e) => setInstructions(e.target.value)}
-                className="w-full bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
-              />
+              <div className="flex space-x-2">
+                <input 
+                  type="text"
+                  placeholder="Enter a topic (e.g., Photosynthesis, The Cold War)"
+                  value={instructions}
+                  onChange={(e) => setInstructions(e.target.value)}
+                  className="flex-1 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
+                />
+                <button 
+                  type="button"
+                  onClick={() => { onClose(); window.dispatchEvent(new CustomEvent('trigger-file-upload')); }}
+                  className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-medium text-sm border border-gray-200 dark:border-gray-700 whitespace-nowrap"
+                >
+                  Upload File
+                </button>
+              </div>
             )}
           </div>
           {sourceName && (
@@ -94,5 +103,7 @@ export default function GenericActionModal({ isOpen, onClose, onGenerate, source
     </div>
   )
 }
+
+
 
 
