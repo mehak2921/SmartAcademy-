@@ -311,7 +311,7 @@ export default function Chat() {
       await saveWidgetMessage('flashcards', response.data, response.data.title)
     } catch (error) {
        console.error(error)
-       setMessages(prev => [...prev, { role: 'system', content: (error.response?.data?.detail || "Failed to generate flashcards.").toString().replace(/^\d+:\s*/, "") }])
+       setMessages(prev => [...prev, { role: 'system', content: (err.response?.data?.detail || "Failed to generate flashcards.").toString().replace(/^\d+:\s*/, "") }])
     } finally {
       setIsLoading(false)
       setActiveFileForModal(null)
@@ -336,7 +336,7 @@ export default function Chat() {
        await saveWidgetMessage('quiz', response.data, response.data.title)
      } catch(err) {
        console.error(err)
-       setMessages(prev => [...prev, { role: 'system', content: (error.response?.data?.detail || "Failed to generate quiz.").toString().replace(/^\d+:\s*/, "") }])
+       setMessages(prev => [...prev, { role: 'system', content: (err.response?.data?.detail || "Failed to generate quiz.").toString().replace(/^\d+:\s*/, "") }])
      } finally {
        setIsLoading(false)
        setActiveFileForModal(null)
@@ -657,6 +657,7 @@ export default function Chat() {
     </div>
   )
 }
+
 
 
 
