@@ -385,7 +385,7 @@ export default function Chat() {
       'plan': "Create a structured study plan."
     }
     const basePrompt = promptMap[type] || "Generate response."
-    const finalPrompt = instructions ? ${basePrompt} Instructions:  : basePrompt
+    const finalPrompt = instructions ? `${basePrompt} Instructions: ${instructions}` : basePrompt
     
     const userMsg = { role: 'user', content: finalPrompt }
     setMessages(prev => [...prev, userMsg])
@@ -667,6 +667,9 @@ export default function Chat() {
     </div>
   )
 }
+
+
+
 
 
 
