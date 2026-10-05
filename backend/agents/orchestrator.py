@@ -192,7 +192,7 @@ def summary_agent(state: AgentState) -> dict:
             msg = _processing_message(context) if context.startswith("__PROCESSING__:") else "No document content found. Please re-upload the document."
             return {"messages": [AIMessage(content=msg)]}
 
-    llm_structured = llm.with_structured_output(SummaryOutput)
+    llm_structured = llm.with_structured_output(SummaryOutput, method="json_mode")
     prompt = (
         "Generate a comprehensive, accurate summary STRICTLY based on the context provided below. "
         "Do NOT add any information not present in the context. "
@@ -216,7 +216,7 @@ def quiz_agent(state: AgentState) -> dict:
             msg = _processing_message(context) if context.startswith("__PROCESSING__:") else "No document content found. Please re-upload the document."
             return {"messages": [AIMessage(content=msg)]}
 
-    llm_structured = llm.with_structured_output(QuizOutput)
+    llm_structured = llm.with_structured_output(QuizOutput, method="json_mode")
     prompt = (
         "Create a multiple choice quiz STRICTLY based on the context below.\n" + "1. Is it study material? If the document is a resume, CV, or non-educational text, set `is_valid_study_material=False` and return empty questions.\n" + "2. QUANTITY: If the user explicitly asks for a specific NUMBER of questions (e.g., '1 quiz question', 'generate 2 questions'), you MUST generate EXACTLY that number. Do not ignore the user's requested number! If not specified, default to 5.\n"
         "Do NOT invent questions outside the context. "
@@ -246,7 +246,7 @@ def study_plan_agent(state: AgentState) -> dict:
             msg = _processing_message(context) if context.startswith("__PROCESSING__:") else "No document content found. Please re-upload the document."
             return {"messages": [AIMessage(content=msg)]}
 
-    llm_structured = llm.with_structured_output(StudyPlanOutput)
+    llm_structured = llm.with_structured_output(StudyPlanOutput, method="json_mode")
     prompt = (
         "Create a structured study plan STRICTLY based on the context below.\n" + "1. Is it study material? If the document is a resume, CV, or non-educational text, set `is_valid_study_material=False` and return empty tasks.\n" + "2. QUANTITY: If the user explicitly asks for a specific NUMBER of items, you MUST generate EXACTLY that number. Do not ignore the user's requested number! If not specified, default to 5.\n"
         "You MUST output valid JSON matching the requested schema.\n"
@@ -274,7 +274,7 @@ def flashcards_agent(state: AgentState) -> dict:
             msg = _processing_message(context) if context.startswith("__PROCESSING__:") else "No document content found. Please re-upload the document."
             return {"messages": [AIMessage(content=msg)]}
 
-    llm_structured = llm.with_structured_output(FlashcardOutput)
+    llm_structured = llm.with_structured_output(FlashcardOutput, method="json_mode")
     prompt = (
         "Create a set of flashcards STRICTLY based on the context below. " + "Each flashcard should have a clear 'front' (term/concept) and 'back' (definition/explanation).\n" + "1. Is it study material? If the document is a resume, CV, or non-educational text, set `is_valid_study_material=False` and return empty flashcards.\n" + "2. QUANTITY: If the user explicitly asks for a specific NUMBER of flashcards (e.g., '1 flashcard', 'generate 2 flashcards'), you MUST generate EXACTLY that number. Do not ignore the user's requested number! If not specified, default to 5.\n"
         "You MUST output valid JSON matching the requested schema.\n"
@@ -308,7 +308,7 @@ def concepts_agent(state: AgentState) -> dict:
             msg = _processing_message(context) if context.startswith("__PROCESSING__:") else "No document content found. Please re-upload the document."
             return {"messages": [AIMessage(content=msg)]}
 
-    llm_structured = llm.with_structured_output(ConceptsOutput)
+    llm_structured = llm.with_structured_output(ConceptsOutput, method="json_mode")
     prompt = (
         "Extract the most important key concepts from the context below and explain them clearly. "
         "You MUST output valid JSON matching the requested schema.\n"
@@ -335,7 +335,7 @@ def resources_agent(state: AgentState) -> dict:
             msg = _processing_message(context) if context.startswith("__PROCESSING__:") else "No document content found. Please re-upload the document."
             return {"messages": [AIMessage(content=msg)]}
 
-    llm_structured = llm.with_structured_output(ResourcesOutput)
+    llm_structured = llm.with_structured_output(ResourcesOutput, method="json_mode")
     prompt = (
         "Recommend high-quality learning resources (videos, articles, books, courses) related to the topics in the context below. "
         "You MUST output valid JSON matching the requested schema.\n"
@@ -396,6 +396,7 @@ workflow.add_edge("concepts_agent", END)
 workflow.add_edge("resources_agent", END)
 
 orchestrator = workflow.compile()
+
 
 
 

@@ -117,7 +117,7 @@ async def chat_endpoint(request: ChatRequest, user=Depends(get_current_user)):
                         title: str
                     
                     from agents.orchestrator import llm
-                    title_llm = llm.with_structured_output(SessionTitle)
+                    title_llm = llm.with_structured_output(SessionTitle, method="json_mode")
                     
                     context_str = f"Topic: {request.current_topic}. " if request.current_topic else ""
                     docs_str = f"Documents: {[d.get('name', 'Document') for d in request.active_documents]}. " if request.active_documents else ""
@@ -212,3 +212,4 @@ async def save_widget(request: WidgetRequest, user=Depends(get_current_user)):
     except Exception as e:
         import traceback; traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
+
