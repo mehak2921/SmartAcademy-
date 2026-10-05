@@ -59,16 +59,11 @@ async def generate_flashcards(request: GenerateFlashcardsRequest, user=Depends(g
             session_id = sess.data[0]["id"]
             
             # Format markdown
-            markdown_content = f"### {result_title}
-
-"
+            markdown_content = f"### {result_title}\n\n"
             for f in result_flashcards:
                 f_front = f.get("front", "") if isinstance(f, dict) else f.front
                 f_back = f.get("back", "") if isinstance(f, dict) else f.back
-                markdown_content += f"**Front:** {f_front}
-**Back:** {f_back}
-
-"
+                markdown_content += f"**Front:** {f_front}\n**Back:** {f_back}\n\n"
                 
             user_msg = "Generate flashcards for the uploaded document." if request.active_documents else f"Generate flashcards about {request.topic}."
             
@@ -83,6 +78,7 @@ async def generate_flashcards(request: GenerateFlashcardsRequest, user=Depends(g
     except Exception as e:
         import traceback; traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
+
 
 
 
