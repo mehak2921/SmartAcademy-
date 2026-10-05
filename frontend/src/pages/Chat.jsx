@@ -392,7 +392,7 @@ export default function Chat() {
     const title = type.charAt(0).toUpperCase() + type.slice(1)
     
     if (activeFileForModal) {
-      sendMessageToAI([...messages, userMsg], ${title} for , [activeFileForModal])
+      sendMessageToAI([...messages, userMsg], `${title} for ${activeFileForModal.name}`, [activeFileForModal])
     } else {
       sendMessageToAI([...messages, userMsg], title)
     }
@@ -667,6 +667,7 @@ export default function Chat() {
     </div>
   )
 }
+
 
 
 
