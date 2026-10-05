@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { X, Sparkles } from 'lucide-react'
+import { X, Sparkles, Upload } from 'lucide-react'
 
 export default function GenericActionModal({ isOpen, onClose, onGenerate, sourceName, actionType }) {
   const [instructions, setInstructions] = useState('')
@@ -104,6 +104,7 @@ export default function GenericActionModal({ isOpen, onClose, onGenerate, source
     </div>
   )
 }
+
 
 
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Layers } from 'lucide-react'
+import { X, Layers, Upload } from 'lucide-react'
 
 export default function GenerateFlashcardsModal({ isOpen, onClose, onGenerate, sourceName }) {
   const [count, setCount] = useState(10)
@@ -104,5 +104,6 @@ export default function GenerateFlashcardsModal({ isOpen, onClose, onGenerate, s
     </AnimatePresence>
   )
 }
+
 
 

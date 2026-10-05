@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { X, BrainCircuit, PlayCircle } from 'lucide-react'
+import { X, BrainCircuit, PlayCircle, Upload } from 'lucide-react'
 
 export default function GenerateQuizModal({ isOpen, onClose, onGenerate, sourceName }) {
   const [difficulty, setDifficulty] = useState('Mixed')
@@ -134,5 +134,6 @@ export default function GenerateQuizModal({ isOpen, onClose, onGenerate, sourceN
     </div>
   )
 }
+
 
 
