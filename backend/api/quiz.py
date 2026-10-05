@@ -14,7 +14,7 @@ class QuizQuestion(BaseModel):
 
 class QuizOutput(BaseModel):
     is_valid_study_material: bool = Field(description="Set to false if the document is a resume, CV, or non-educational.", default=True)
-    title: str = Field(description="Title of the quiz")
+    title: str = Field(description="Title of the quiz", default="Quiz")
     questions: List[QuizQuestion] = Field(description="List of questions")
 
 class GenerateQuizRequest(BaseModel):
@@ -154,5 +154,6 @@ async def save_quiz(request: SaveQuizRequest, user=Depends(get_current_user)):
     except Exception as e:
         import traceback; traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
+
 
 

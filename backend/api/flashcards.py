@@ -85,3 +85,4 @@ async def generate_flashcards(request: GenerateFlashcardsRequest, user=Depends(g
         raise HTTPException(status_code=500, detail=str(e))
 
 
+
