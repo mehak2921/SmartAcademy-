@@ -376,7 +376,7 @@ export default function Chat() {
     }
   }, [searchParams, messages.length, isLoading])
 
-  const handleGenerateGeneric = (instructions) => {
+  const handleGenerateGeneric = ({ topic, instructions }) => {
     const { type } = genericModalData
     const promptMap = {
       'summary': "Generate a detailed summary.",
@@ -385,16 +385,18 @@ export default function Chat() {
       'plan': "Create a structured study plan."
     }
     const basePrompt = promptMap[type] || "Generate response."
-    const finalPrompt = instructions ? `${basePrompt} Instructions: ${instructions}` : basePrompt
+    let finalPrompt = basePrompt
+    if (topic) finalPrompt += ` Topic: ${topic}`
+    if (instructions) finalPrompt += ` Instructions: ${instructions}`
     
-    const userMsg = { role: 'user', content: finalPrompt }
+    const userMsg = { role: 'user', content: finalPrompt.trim() }
     setMessages(prev => [...prev, userMsg])
     const title = type.charAt(0).toUpperCase() + type.slice(1)
     
     if (activeFileForModal) {
       sendMessageToAI([...messages, userMsg], `${title} for ${activeFileForModal.name}`, [activeFileForModal])
     } else {
-      sendMessageToAI([...messages, userMsg], title)
+      sendMessageToAI([...messages, userMsg], `${title} for ${topic || 'Custom Topic'}`)
     }
   }
 
@@ -667,6 +669,7 @@ export default function Chat() {
     </div>
   )
 }
+
 
 
 
