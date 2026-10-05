@@ -39,9 +39,11 @@ export default function GenerateFlashcardsModal({ isOpen, onClose, onGenerate, s
           </div>
 
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
-            <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Source: <span className="font-semibold text-gray-700 dark:text-gray-300">{sourceName || 'Topic'}</span>
-            </div>
+            {sourceName && (
+              <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                Source: <span className="font-semibold text-gray-700 dark:text-gray-300">{sourceName}</span>
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -59,7 +61,7 @@ export default function GenerateFlashcardsModal({ isOpen, onClose, onGenerate, s
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Specific Topic / Focus (Optional)
+                {sourceName ? "Specific Topic / Focus (Optional)" : "Topic (Required)"}
               </label>
               <input
                 type="text"
@@ -91,3 +93,4 @@ export default function GenerateFlashcardsModal({ isOpen, onClose, onGenerate, s
     </AnimatePresence>
   )
 }
+

@@ -5,11 +5,12 @@ export default function GenerateQuizModal({ isOpen, onClose, onGenerate, sourceN
   const [difficulty, setDifficulty] = useState('Mixed')
   const [quizType, setQuizType] = useState('Mixed')
   const [count, setCount] = useState(10)
+  const [topic, setTopic] = useState('')
 
   if (!isOpen) return null
 
   const handleGenerate = () => {
-    onGenerate({ difficulty, quizType, count })
+    onGenerate({ difficulty, quizType, count, topic })
     onClose()
   }
 
@@ -35,10 +36,20 @@ export default function GenerateQuizModal({ isOpen, onClose, onGenerate, sourceN
         <div className="p-6 space-y-6 flex-1 overflow-y-auto">
           
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Source</label>
-            <div className="bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-sm font-medium text-gray-800 dark:text-gray-200">
-              {sourceName || "Active Document"}
-            </div>
+            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{sourceName ? "Source" : "Topic"}</label>
+            {sourceName ? (
+              <div className="bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-sm font-medium text-gray-800 dark:text-gray-200">
+                {sourceName}
+              </div>
+            ) : (
+              <input 
+                type="text"
+                placeholder="Enter a topic (e.g., World War II, Python Basics)"
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
+                className="w-full bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 dark:text-white"
+              />
+            )}
           </div>
 
           <div className="grid grid-cols-3 gap-4">
@@ -114,3 +125,4 @@ export default function GenerateQuizModal({ isOpen, onClose, onGenerate, sourceN
     </div>
   )
 }
+

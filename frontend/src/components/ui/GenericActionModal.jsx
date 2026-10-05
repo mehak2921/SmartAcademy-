@@ -44,11 +44,22 @@ export default function GenericActionModal({ isOpen, onClose, onGenerate, source
         {/* Body */}
         <div className="p-6 space-y-6 flex-1 overflow-y-auto">
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Source</label>
-            <div className="bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-sm font-medium text-gray-800 dark:text-gray-200">
-              {sourceName || "Active Document or Chat Context"}
-            </div>
+            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{sourceName ? "Source" : "Topic"}</label>
+            {sourceName ? (
+              <div className="bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-sm font-medium text-gray-800 dark:text-gray-200">
+                {sourceName}
+              </div>
+            ) : (
+              <input 
+                type="text"
+                placeholder="Enter a topic (e.g., Photosynthesis, The Cold War)"
+                value={instructions}
+                onChange={(e) => setInstructions(e.target.value)}
+                className="w-full bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
+              />
+            )}
           </div>
+          {sourceName && (
           <div>
             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Specific Instructions (Optional)</label>
             <input 
@@ -82,3 +93,4 @@ export default function GenericActionModal({ isOpen, onClose, onGenerate, source
     </div>
   )
 }
+
