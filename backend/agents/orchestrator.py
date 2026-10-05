@@ -228,14 +228,14 @@ def quiz_agent(state: AgentState) -> dict:
         f"{get_chat_history_context(state)}\n"
         f"{context}"
     )
-    result = llm_structured.invoke(prompt)
-
-    import json
-    widget_payload = {
-        "type": "quiz",
-        "data": result.dict()
-    }
-    return {"messages": [AIMessage(content=f"__WIDGET__:quiz:{json.dumps(result.dict())}")]}
+    try:
+        result = llm_structured.invoke(prompt)
+        if not getattr(result, "is_valid_study_material", True): return {"messages": [AIMessage(content="I cannot generate a quiz for this type of document. Please upload educational material.")]}
+        import json
+        return {"messages": [AIMessage(content=f"__WIDGET__:quiz:{json.dumps(result.dict() if not isinstance(result, dict) else result)}")]}
+    except Exception as e:
+        import traceback; traceback.print_exc()
+        return {"messages": [AIMessage(content="Sorry, I had trouble generating this quiz. Please try again with a clearer topic.")]}
 
 def study_plan_agent(state: AgentState) -> dict:
     if not state.get("active_documents"):
@@ -289,14 +289,14 @@ def flashcards_agent(state: AgentState) -> dict:
         f"{get_chat_history_context(state)}\n"
         f"{context}"
     )
-    result = llm_structured.invoke(prompt)
-
-    import json
-    widget_payload = {
-        "type": "flashcards",
-        "data": result.dict()
-    }
-    return {"messages": [AIMessage(content=f"__WIDGET__:flashcards:{json.dumps(result.dict())}")]}
+    try:
+        result = llm_structured.invoke(prompt)
+        if not getattr(result, "is_valid_study_material", True): return {"messages": [AIMessage(content="I cannot generate flashcards for this type of document. Please upload educational material.")]}
+        import json
+        return {"messages": [AIMessage(content=f"__WIDGET__:flashcards:{json.dumps(result.dict() if not isinstance(result, dict) else result)}")]}
+    except Exception as e:
+        import traceback; traceback.print_exc()
+        return {"messages": [AIMessage(content="Sorry, I had trouble generating flashcards. Please try again with a clearer topic.")]}
 
 def translation_agent(state: AgentState) -> dict:
     prompt = f"You are a translation assistant. Translate the following request and respond appropriately:\n\n{state['messages'][-1].content}"
