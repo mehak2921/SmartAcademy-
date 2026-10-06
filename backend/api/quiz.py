@@ -1,21 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, Body
 from pydantic import BaseModel, Field
+from models.schemas import QuizOutput
 from typing import List, Optional
 from core.security import get_current_user, service_supabase
 from agents.orchestrator import llm, get_document_context, get_web_context
 
 router = APIRouter(prefix="/quiz", tags=["Quiz"])
 
-class QuizQuestion(BaseModel):
-    type: str = Field(description="The type of question: 'MCQ', 'Short QA', 'Long QA', or 'Fill in the blanks'")
-    question: str = Field(description="The quiz question")
-    options: List[str] = Field(description="List of multiple choice options (only if type is 'MCQ', otherwise empty list)", default_factory=list)
-    answer: str = Field(description="The correct answer (for MCQ) or the expected key points/answer (for other types)")
 
-class QuizOutput(BaseModel):
-    is_valid_study_material: bool = Field(description="Set to false if the document is a resume, CV, or non-educational.", default=True)
-    title: str = Field(description="Title of the quiz", default="Quiz")
-    questions: List[QuizQuestion] = Field(description="List of questions")
 
 class GenerateQuizRequest(BaseModel):
     topic: Optional[str] = None
@@ -131,7 +123,7 @@ async def evaluate_answer(request: EvaluateAnswerRequest, user=Depends(get_curre
             "You MUST return valid JSON exactly matching this schema: {\"is_correct\": true/false, \"explanation\": \"your explanation\"}"
         )
         result = eval_llm.invoke(prompt)
-        return result.dict()
+        return result if isinstance(result, dict) else result.model_dump() if hasattr(result, "model_dump") else result.dict()
     except Exception as e:
         import traceback; traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
