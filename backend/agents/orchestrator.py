@@ -261,8 +261,12 @@ def study_plan_agent(state: AgentState) -> dict:
     )
     try:
         result = llm_structured.invoke(prompt)
-        if getattr(result, "is_valid_study_material", True) is False:
-            return {"messages": [AIMessage(content="I cannot generate a study plan for this document type (e.g. resumes). Please upload educational material.")]}
+    import json
+    try:
+        data = result.dict() if not isinstance(result, dict) else result
+        return {"messages": [AIMessage(content=f"__WIDGET__:study_plan:{json.dumps(data)}")]}
+    except Exception as e:
+        return {"messages": [AIMessage(content="Sorry, I had trouble generating study_plan. Please try again.")]}
         import json
         return {"messages": [AIMessage(content=f"__WIDGET__:study_plan:{json.dumps(result.dict() if not isinstance(result, dict) else result)}")]}
     except Exception as e:
@@ -323,11 +327,12 @@ def concepts_agent(state: AgentState) -> dict:
         f"{context}"
     )
     result = llm_structured.invoke(prompt)
-
-    markdown_content = f"### {result.title}\n\n"
-    for concept in result.concepts:
-        markdown_content += f"**{concept.name}**\n{concept.explanation}\n\n"
-    return {"messages": [AIMessage(content=markdown_content)]}
+    import json
+    try:
+        data = result.dict() if not isinstance(result, dict) else result
+        return {"messages": [AIMessage(content=f"__WIDGET__:concepts:{json.dumps(data)}")]}
+    except Exception as e:
+        return {"messages": [AIMessage(content="Sorry, I had trouble generating concepts. Please try again.")]}
 
 def resources_agent(state: AgentState) -> dict:
     if not state.get("active_documents"):
@@ -350,14 +355,12 @@ def resources_agent(state: AgentState) -> dict:
         f"{context}"
     )
     result = llm_structured.invoke(prompt)
-
-    markdown_content = f"### {result.title}\n\n"
-    for resource in result.resources:
-        markdown_content += f"**{resource.title}** ({resource.type})\n"
-        if resource.url != "N/A":
-            markdown_content += f"[Link]({resource.url})\n"
-        markdown_content += f"{resource.description}\n\n"
-    return {"messages": [AIMessage(content=markdown_content)]}
+    import json
+    try:
+        data = result.dict() if not isinstance(result, dict) else result
+        return {"messages": [AIMessage(content=f"__WIDGET__:resources:{json.dumps(data)}")]}
+    except Exception as e:
+        return {"messages": [AIMessage(content="Sorry, I had trouble generating resources. Please try again.")]}
 
 # ---------------------------------------------------------------------------
 # Build LangGraph
