@@ -244,7 +244,7 @@ def study_plan_agent(state: AgentState) -> dict:
         topic = state.get("current_topic") or state["messages"][-1].content
         context = get_web_context(topic)
         if not context:
-            return {"messages": [AIMessage(content="Please upload a document first, then click **Study Plan** on the document card.")]}
+            return {"messages": [AIMessage(content="Please upload a document first, then click **Study Plan** on the home page.")]}
     else:
         context, is_ready = get_document_context(state["active_documents"])
         if not is_ready:
@@ -253,22 +253,17 @@ def study_plan_agent(state: AgentState) -> dict:
 
     llm_structured = llm.with_structured_output(StudyPlanOutput, method="json_mode")
     prompt = (
-        "Create a structured study plan STRICTLY based on the context below.\n" + "1. Is it study material? If the document is a resume, CV, or non-educational text, set `is_valid_study_material=False` and return empty tasks.\n" + "2. QUANTITY: If the user explicitly asks for a specific NUMBER of items, you MUST generate EXACTLY that number. Do not ignore the user's requested number! If not specified, default to 5.\n"
-        "You MUST output valid JSON matching the requested schema. For concepts, the array MUST be named exactly `concepts` (not `key_concepts`). For study plan, it MUST be `tasks`.\\n"
+        "Create a study plan STRICTLY based on the context provided below. "
+        "You MUST output valid JSON matching the requested schema. For concepts, the array MUST be named exactly `concepts` (not `key_concepts`). For study plan, it MUST be `tasks`.\n"
         f"Request: {state['messages'][-1].content}\n"
         f"{get_chat_history_context(state)}\n"
         f"{context}"
     )
     try:
         result = llm_structured.invoke(prompt)
-    import json
-    try:
+        import json
         data = result.dict() if not isinstance(result, dict) else result
         return {"messages": [AIMessage(content=f"__WIDGET__:study_plan:{json.dumps(data)}")]}
-    except Exception as e:
-        return {"messages": [AIMessage(content="Sorry, I had trouble generating study_plan. Please try again.")]}
-        import json
-        return {"messages": [AIMessage(content=f"__WIDGET__:study_plan:{json.dumps(result.dict() if not isinstance(result, dict) else result)}")]}
     except Exception as e:
         return {"messages": [AIMessage(content="Sorry, I had trouble generating this study plan. Please try again with a clearer topic.")]}
 
@@ -321,14 +316,14 @@ def concepts_agent(state: AgentState) -> dict:
     llm_structured = llm.with_structured_output(ConceptsOutput, method="json_mode")
     prompt = (
         "Extract the most important key concepts from the context below and explain them clearly. "
-        "You MUST output valid JSON matching the requested schema. For concepts, the array MUST be named exactly `concepts` (not `key_concepts`). For study plan, it MUST be `tasks`.\\n"
+        "You MUST output valid JSON matching the requested schema. For concepts, the array MUST be named exactly `concepts` (not `key_concepts`). For study plan, it MUST be `tasks`.\n"
         f"Request: {state['messages'][-1].content}\n"
         f"{get_chat_history_context(state)}\n"
         f"{context}"
     )
-    result = llm_structured.invoke(prompt)
-    import json
     try:
+        result = llm_structured.invoke(prompt)
+        import json
         data = result.dict() if not isinstance(result, dict) else result
         return {"messages": [AIMessage(content=f"__WIDGET__:concepts:{json.dumps(data)}")]}
     except Exception as e:
@@ -349,14 +344,14 @@ def resources_agent(state: AgentState) -> dict:
     llm_structured = llm.with_structured_output(ResourcesOutput, method="json_mode")
     prompt = (
         "Recommend high-quality learning resources (videos, articles, books, courses) related to the topics in the context below. "
-        "You MUST output valid JSON matching the requested schema. For concepts, the array MUST be named exactly `concepts` (not `key_concepts`). For study plan, it MUST be `tasks`.\\n"
+        "You MUST output valid JSON matching the requested schema. For concepts, the array MUST be named exactly `concepts` (not `key_concepts`). For study plan, it MUST be `tasks`.\n"
         f"Request: {state['messages'][-1].content}\n"
         f"{get_chat_history_context(state)}\n"
         f"{context}"
     )
-    result = llm_structured.invoke(prompt)
-    import json
     try:
+        result = llm_structured.invoke(prompt)
+        import json
         data = result.dict() if not isinstance(result, dict) else result
         return {"messages": [AIMessage(content=f"__WIDGET__:resources:{json.dumps(data)}")]}
     except Exception as e:
