@@ -254,7 +254,7 @@ def study_plan_agent(state: AgentState) -> dict:
     llm_structured = llm.with_structured_output(StudyPlanOutput, method="json_mode")
     prompt = (
         "Create a study plan STRICTLY based on the context provided below. "
-        "You MUST output valid JSON matching the requested schema. For concepts, the array MUST be named exactly `concepts` (not `key_concepts`). For study plan, it MUST be `tasks`.\n"
+        "You MUST output valid JSON matching the requested schema. For concepts, the array MUST be named exactly `concepts`. For study plan, the array MUST be `tasks`. Inside EACH task, the keys MUST be exactly named `day`, `topic`, and `duration`. DO NOT rename `topic` to `topics` or `subject`. DO NOT rename `duration` to `time`. You MUST use exact keys!\n"
         f"Request: {state['messages'][-1].content}\n"
         f"{get_chat_history_context(state)}\n"
         f"{context}"
@@ -316,7 +316,7 @@ def concepts_agent(state: AgentState) -> dict:
     llm_structured = llm.with_structured_output(ConceptsOutput, method="json_mode")
     prompt = (
         "Extract the most important key concepts from the context below and explain them clearly. "
-        "You MUST output valid JSON matching the requested schema. For concepts, the array MUST be named exactly `concepts` (not `key_concepts`). For study plan, it MUST be `tasks`.\n"
+        "You MUST output valid JSON matching the requested schema. For concepts, the array MUST be named exactly `concepts`. For study plan, the array MUST be `tasks`. Inside EACH task, the keys MUST be exactly named `day`, `topic`, and `duration`. DO NOT rename `topic` to `topics` or `subject`. DO NOT rename `duration` to `time`. You MUST use exact keys!\n"
         f"Request: {state['messages'][-1].content}\n"
         f"{get_chat_history_context(state)}\n"
         f"{context}"
@@ -344,7 +344,7 @@ def resources_agent(state: AgentState) -> dict:
     llm_structured = llm.with_structured_output(ResourcesOutput, method="json_mode")
     prompt = (
         "Recommend high-quality learning resources (videos, articles, books, courses) related to the topics in the context below. "
-        "You MUST output valid JSON matching the requested schema. For concepts, the array MUST be named exactly `concepts` (not `key_concepts`). For study plan, it MUST be `tasks`.\n"
+        "You MUST output valid JSON matching the requested schema. For concepts, the array MUST be named exactly `concepts`. For study plan, the array MUST be `tasks`. Inside EACH task, the keys MUST be exactly named `day`, `topic`, and `duration`. DO NOT rename `topic` to `topics` or `subject`. DO NOT rename `duration` to `time`. You MUST use exact keys!\n"
         f"Request: {state['messages'][-1].content}\n"
         f"{get_chat_history_context(state)}\n"
         f"{context}"

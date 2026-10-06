@@ -23,8 +23,8 @@ export default function InlineStudyPlan({ planData }) {
                 <span className="block text-xl font-bold text-slate-700 dark:text-slate-200">{task.day}</span>
               </div>
               <div className="flex-1">
-                <h4 className="font-semibold text-slate-800 dark:text-slate-100">{task.topic}</h4>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{task.duration}</p>
+                <h4 className="font-semibold text-slate-800 dark:text-slate-100">{task.topic || "Topic details not provided"}</h4>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{task.duration || "Duration not specified"}</p>
               </div>
             </div>
           ))}
