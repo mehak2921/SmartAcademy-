@@ -45,7 +45,7 @@ class StudyPlanTask(BaseModel):
 
 class StudyPlanOutput(BaseModel):
     is_valid_study_material: bool = Field(description="Set to false if the document is a resume, CV, or non-educational.", default=True)
-    title: str = Field(description="Title of the study plan")
+    title: str = Field(description="Title of the study plan", default="Study Plan")
     tasks: List[StudyPlanTask] = Field(description="List of daily tasks")
 
 class Flashcard(BaseModel):
@@ -58,7 +58,7 @@ class FlashcardOutput(BaseModel):
     flashcards: List[Flashcard] = Field(description="List of flashcards")
 
 class SummaryOutput(BaseModel):
-    title: str = Field(description="Title of the summary")
+    title: str = Field(description="Title of the summary", default="Summary")
     summary: str = Field(description="The detailed summary markdown text with headings and bullet points")
 
 class Concept(BaseModel):
@@ -66,7 +66,7 @@ class Concept(BaseModel):
     explanation: str = Field(description="Detailed explanation of the concept")
 
 class ConceptsOutput(BaseModel):
-    title: str = Field(description="Title for the concepts")
+    title: str = Field(description="Title for the concepts", default="Key Concepts")
     concepts: List[Concept] = Field(description="List of extracted concepts")
 
 class Resource(BaseModel):
@@ -76,7 +76,7 @@ class Resource(BaseModel):
     description: str = Field(description="Brief description of the resource")
 
 class ResourcesOutput(BaseModel):
-    title: str = Field(description="Title for the resources list")
+    title: str = Field(description="Title for the resources list", default="Learning Resources")
     resources: List[Resource] = Field(description="List of recommended learning resources")
 
 # ---------------------------------------------------------------------------
@@ -403,6 +403,8 @@ workflow.add_edge("concepts_agent", END)
 workflow.add_edge("resources_agent", END)
 
 orchestrator = workflow.compile()
+
+
 
 
 
