@@ -35,7 +35,7 @@ class QuizQuestion(BaseModel):
 
 class QuizOutput(BaseModel):
     is_valid_study_material: bool = Field(description="Set to false if the document is a resume, CV, or non-educational.", default=True)
-    title: str = Field(description="Title of the quiz")
+    title: str = Field(description="Title of the quiz", default="Quiz")
     questions: List[QuizQuestion] = Field(description="List of questions")
 
 class StudyPlanTask(BaseModel):
@@ -54,7 +54,7 @@ class Flashcard(BaseModel):
 
 class FlashcardOutput(BaseModel):
     is_valid_study_material: bool = Field(description="Set to false if the document is a resume, CV, or non-educational.", default=True)
-    title: str = Field(description="Title for the flashcard deck")
+    title: str = Field(description="Title for the flashcard deck", default="Flashcards")
     flashcards: List[Flashcard] = Field(description="List of flashcards")
 
 class SummaryOutput(BaseModel):
@@ -403,6 +403,8 @@ workflow.add_edge("concepts_agent", END)
 workflow.add_edge("resources_agent", END)
 
 orchestrator = workflow.compile()
+
+
 
 
 
