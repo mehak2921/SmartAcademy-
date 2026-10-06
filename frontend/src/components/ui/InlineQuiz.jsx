@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CheckCircle, XCircle, ChevronRight, Loader2, Award, ArrowLeft } from 'lucide-react'
 import axios from 'axios'
@@ -10,8 +10,50 @@ export default function InlineQuiz({ quizData, mode = 'Practice', onBack }) {
   const [userAnswers, setUserAnswers] = useState({}) 
   const [currentInput, setCurrentInput] = useState('')
   const [isEvaluating, setIsEvaluating] = useState(false)
+  const [hasLoaded, setHasLoaded] = useState(false)
+
+  // Unique key for this quiz
+  const storageKey = quizData && quizData.questions && quizData.questions.length > 0 
+    ? `quiz_progress_${btoa(quizData.questions[0].question).substring(0, 20)}` 
+    : null;
+
+  // Load from local storage
+  useEffect(() => {
+    if (storageKey) {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setAppState(parsed.appState || 'playing');
+          setCurrentQuestionIdx(parsed.currentQuestionIdx || 0);
+          setUserAnswers(parsed.userAnswers || {});
+        } catch(e) {}
+      }
+    }
+    setHasLoaded(true);
+  }, [storageKey]);
+
+  // Save to local storage whenever state changes
+  useEffect(() => {
+    if (hasLoaded && storageKey) {
+      localStorage.setItem(storageKey, JSON.stringify({
+        appState,
+        currentQuestionIdx,
+        userAnswers
+      }));
+    }
+  }, [appState, currentQuestionIdx, userAnswers, storageKey, hasLoaded]);
 
   if (!quizData || !quizData.questions || quizData.questions.length === 0) return null
+
+
+  const handleRetake = () => {
+    setAppState('playing')
+    setCurrentQuestionIdx(0)
+    setUserAnswers({})
+    setCurrentInput('')
+    setIsEvaluating(false)
+  }
 
   const handleAnswerSubmit = async () => {
     if (!currentInput.trim()) return
@@ -213,17 +255,23 @@ export default function InlineQuiz({ quizData, mode = 'Practice', onBack }) {
                <div className="text-sm font-medium text-gray-500 mt-2">{correctCount} out of {quizData.questions.length} correct</div>
             </div>
 
-            {onBack && (
-              <div className="mt-10">
+            <div className="mt-10 flex justify-center space-x-4">
+              <button 
+                onClick={handleRetake}
+                className="px-6 py-3 bg-purple-100 hover:bg-purple-200 dark:bg-purple-900/30 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 rounded-xl font-medium transition-colors inline-flex items-center"
+              >
+                <ArrowLeft size={18} className="mr-2" />
+                Retake Quiz
+              </button>
+              {onBack && (
                  <button 
                     onClick={onBack}
                     className="px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-xl font-medium transition-colors inline-flex items-center"
                  >
-                    <ArrowLeft size={18} className="mr-2" />
                     Back
                  </button>
-              </div>
-            )}
+              )}
+            </div>
          </div>
 
          <div className="space-y-4">
