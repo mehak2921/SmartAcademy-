@@ -333,13 +333,13 @@ export default function Chat() {
     }
   }
 
-  const handleGenerateQuiz = async ({ difficulty, quizType, count }) => {
+  const handleGenerateQuiz = async ({ difficulty, quizType, count, topic }) => {
      setIsLoading(true)
      try {
        const { data } = await supabase.auth.getSession()
        const token = data.session?.access_token
        const response = await axios.post(import.meta.env.VITE_API_URL + '/api/quiz/generate', {
-         topic: null,
+         topic: topic || null,
          active_documents: activeFileForModal ? [activeFileForModal.id] : activeDocuments.map(d => d.id),
          difficulty,
          type: quizType,
@@ -680,6 +680,7 @@ export default function Chat() {
     </div>
   )
 }
+
 
 
 

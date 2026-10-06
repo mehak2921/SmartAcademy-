@@ -5,6 +5,7 @@ from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, System
 from langchain_groq import ChatGroq
 from langchain_community.utilities import GoogleSerperAPIWrapper
 from pydantic import BaseModel, Field
+from models.schemas import QuizOutput, FlashcardOutput, SummaryOutput, StudyPlanOutput, ConceptsOutput, ResourcesOutput
 from dotenv import load_dotenv
 from core.security import service_supabase
 from datetime import datetime
@@ -196,7 +197,7 @@ def summary_agent(state: AgentState) -> dict:
     prompt = (
         "Generate a comprehensive, accurate summary STRICTLY based on the context provided below. "
         "Do NOT add any information not present in the context. "
-        "You MUST output valid JSON matching the requested schema.\n"
+        "You MUST output valid JSON matching the requested schema. For concepts, the array MUST be named exactly `concepts` (not `key_concepts`). For study plan, it MUST be `tasks`.\\n"
         f"Request: {state['messages'][-1].content}\n"
         f"{get_chat_history_context(state)}\n"
         f"{context}"
@@ -224,7 +225,7 @@ def quiz_agent(state: AgentState) -> dict:
     prompt = (
         "Create a multiple choice quiz STRICTLY based on the context below.\n" + "1. Is it study material? If the document is a resume, CV, or non-educational text, set `is_valid_study_material=False` and return empty questions.\n" + "2. QUANTITY: If the user explicitly asks for a specific NUMBER of questions (e.g., '1 quiz question', 'generate 2 questions'), you MUST generate EXACTLY that number. Do not ignore the user's requested number! If not specified, default to 5.\n"
         "Do NOT invent questions outside the context. "
-        "You MUST output valid JSON matching the requested schema.\n"
+        "You MUST output valid JSON matching the requested schema. For concepts, the array MUST be named exactly `concepts` (not `key_concepts`). For study plan, it MUST be `tasks`.\\n"
         f"Request: {state['messages'][-1].content}\n"
         f"{get_chat_history_context(state)}\n"
         f"{context}"
@@ -253,7 +254,7 @@ def study_plan_agent(state: AgentState) -> dict:
     llm_structured = llm.with_structured_output(StudyPlanOutput, method="json_mode")
     prompt = (
         "Create a structured study plan STRICTLY based on the context below.\n" + "1. Is it study material? If the document is a resume, CV, or non-educational text, set `is_valid_study_material=False` and return empty tasks.\n" + "2. QUANTITY: If the user explicitly asks for a specific NUMBER of items, you MUST generate EXACTLY that number. Do not ignore the user's requested number! If not specified, default to 5.\n"
-        "You MUST output valid JSON matching the requested schema.\n"
+        "You MUST output valid JSON matching the requested schema. For concepts, the array MUST be named exactly `concepts` (not `key_concepts`). For study plan, it MUST be `tasks`.\\n"
         f"Request: {state['messages'][-1].content}\n"
         f"{get_chat_history_context(state)}\n"
         f"{context}"
@@ -282,7 +283,7 @@ def flashcards_agent(state: AgentState) -> dict:
     llm_structured = llm.with_structured_output(FlashcardOutput, method="json_mode")
     prompt = (
         "Create a set of flashcards STRICTLY based on the context below. " + "Each flashcard should have a clear 'front' (term/concept) and 'back' (definition/explanation).\n" + "1. Is it study material? If the document is a resume, CV, or non-educational text, set `is_valid_study_material=False` and return empty flashcards.\n" + "2. QUANTITY: If the user explicitly asks for a specific NUMBER of flashcards (e.g., '1 flashcard', 'generate 2 flashcards'), you MUST generate EXACTLY that number. Do not ignore the user's requested number! If not specified, default to 5.\n"
-        "You MUST output valid JSON matching the requested schema.\n"
+        "You MUST output valid JSON matching the requested schema. For concepts, the array MUST be named exactly `concepts` (not `key_concepts`). For study plan, it MUST be `tasks`.\\n"
         f"Request: {state['messages'][-1].content}\n"
         f"{get_chat_history_context(state)}\n"
         f"{context}"
@@ -316,7 +317,7 @@ def concepts_agent(state: AgentState) -> dict:
     llm_structured = llm.with_structured_output(ConceptsOutput, method="json_mode")
     prompt = (
         "Extract the most important key concepts from the context below and explain them clearly. "
-        "You MUST output valid JSON matching the requested schema.\n"
+        "You MUST output valid JSON matching the requested schema. For concepts, the array MUST be named exactly `concepts` (not `key_concepts`). For study plan, it MUST be `tasks`.\\n"
         f"Request: {state['messages'][-1].content}\n"
         f"{get_chat_history_context(state)}\n"
         f"{context}"
@@ -343,7 +344,7 @@ def resources_agent(state: AgentState) -> dict:
     llm_structured = llm.with_structured_output(ResourcesOutput, method="json_mode")
     prompt = (
         "Recommend high-quality learning resources (videos, articles, books, courses) related to the topics in the context below. "
-        "You MUST output valid JSON matching the requested schema.\n"
+        "You MUST output valid JSON matching the requested schema. For concepts, the array MUST be named exactly `concepts` (not `key_concepts`). For study plan, it MUST be `tasks`.\\n"
         f"Request: {state['messages'][-1].content}\n"
         f"{get_chat_history_context(state)}\n"
         f"{context}"
@@ -401,6 +402,7 @@ workflow.add_edge("concepts_agent", END)
 workflow.add_edge("resources_agent", END)
 
 orchestrator = workflow.compile()
+
 
 
 
