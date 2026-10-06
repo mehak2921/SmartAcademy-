@@ -13,6 +13,10 @@ import GenerateQuizModal from '../components/ui/GenerateQuizModal'
 import GenerateFlashcardsModal from '../components/ui/GenerateFlashcardsModal'
 import GenericActionModal from '../components/ui/GenericActionModal'
 import InlineQuiz from '../components/ui/InlineQuiz'
+import InlineSummary from '../components/ui/InlineSummary'
+import InlineStudyPlan from '../components/ui/InlineStudyPlan'
+import InlineConcepts from '../components/ui/InlineConcepts'
+import InlineResources from '../components/ui/InlineResources'
 import InlineFlashcards from '../components/ui/InlineFlashcards'
 
 export default function Chat() {
@@ -171,7 +175,18 @@ export default function Chat() {
             return { role: m.role, content: m.content }
           }
           
-          if (m.type === 'flashcards' && m.content.flashcards) {
+          if (m.type === 'summary' && m.content.summary) {
+              return { role: m.role, content: "[System Note: The user generated a Summary. Here are the contents:]\\n\\n" + m.content.summary }
+            } else if (m.type === 'study_plan' && m.content.tasks) {
+              const planStr = m.content.tasks.map(t => "Day " + t.day + ": " + t.topic + " (" + t.duration + ")").join('\\n')
+              return { role: m.role, content: "[System Note: The user generated a Study Plan. Here are the contents:]\\n\\n" + planStr }
+            } else if (m.type === 'concepts' && m.content.concepts) {
+              const conceptsStr = m.content.concepts.map(c => c.name + ": " + c.explanation).join('\\n\\n')
+              return { role: m.role, content: "[System Note: The user generated a Key Concepts list. Here are the contents:]\\n\\n" + conceptsStr }
+            } else if (m.type === 'resources' && m.content.resources) {
+              const resStr = m.content.resources.map(r => r.title + " (" + r.url + ")").join('\\n')
+              return { role: m.role, content: "[System Note: The user generated a Resources list. Here are the contents:]\\n\\n" + resStr }
+            } else if (m.type === 'flashcards' && m.content.flashcards) {
             const cardsStr = m.content.flashcards.map(c => `Term: ${c.front}\nDefinition: ${c.back}`).join('\n\n')
             return { role: m.role, content: `[System Note: The user generated a Flashcards set titled "${m.content.title || 'Flashcards'}". Here are the contents:]\n\n${cardsStr}` }
           } else if (m.type === 'quiz' && m.content.questions) {
@@ -571,6 +586,14 @@ export default function Chat() {
                   <InlineFlashcards flashcardsData={msg.content} />
                 ) : msg.type === 'quiz' ? (
                   <InlineQuiz quizData={msg.content} />
+                ) : msg.type === 'summary' ? (
+                  <InlineSummary summaryData={msg.content} />
+                ) : msg.type === 'study_plan' ? (
+                  <InlineStudyPlan planData={msg.content} />
+                ) : msg.type === 'concepts' ? (
+                  <InlineConcepts conceptsData={msg.content} />
+                ) : msg.type === 'resources' ? (
+                  <InlineResources resourcesData={msg.content} />
                 ) : (
                   <div className={`flex max-w-[85%] min-w-0 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
                     <div className={`flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center mt-1 ${msg.role === 'user' ? 'bg-blue-600 ml-4' : 'bg-green-500 mr-4'}`}>
@@ -657,6 +680,7 @@ export default function Chat() {
     </div>
   )
 }
+
 
 
 

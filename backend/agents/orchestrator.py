@@ -203,7 +203,8 @@ def summary_agent(state: AgentState) -> dict:
     )
     try:
         result = llm_structured.invoke(prompt)
-        return {"messages": [AIMessage(content=f"### {result.title}\n\n{result.summary}")]}
+        import json
+        return {"messages": [AIMessage(content=f"__WIDGET__:summary:{json.dumps(result.dict() if not isinstance(result, dict) else result)}")]}
     except Exception as e:
         return {"messages": [AIMessage(content="Sorry, I had trouble generating this summary. Please try again with a clearer topic.")]}
 
@@ -261,11 +262,8 @@ def study_plan_agent(state: AgentState) -> dict:
         result = llm_structured.invoke(prompt)
         if getattr(result, "is_valid_study_material", True) is False:
             return {"messages": [AIMessage(content="I cannot generate a study plan for this document type (e.g. resumes). Please upload educational material.")]}
-        markdown_content = f"### {result.title}\n\n"
-        markdown_content += "| Day | Topic | Duration |\n|---|---|---|\n"
-        for task in result.tasks:
-            markdown_content += f"| {task.day} | {task.topic} | {task.duration} |\n"
-        return {"messages": [AIMessage(content=markdown_content)]}
+        import json
+        return {"messages": [AIMessage(content=f"__WIDGET__:study_plan:{json.dumps(result.dict() if not isinstance(result, dict) else result)}")]}
     except Exception as e:
         return {"messages": [AIMessage(content="Sorry, I had trouble generating this study plan. Please try again with a clearer topic.")]}
 
